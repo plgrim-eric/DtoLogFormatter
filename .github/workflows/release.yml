@@ -1,0 +1,34 @@
+name: 릴리즈 생성하기
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: 릴리즈용 ZIP 생성
+        run: |
+          zip -x "*.git*" "*.github/*" "*.DS_Store" "*.pyc" "__pycache__/*" "*.vscode/*" -r DtoLogFormatter.zip .
+
+      - name: 릴리즈 생성
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: DtoLogFormatter
+          draft: false
+          prerelease: false
+          
+      - name: 릴리즈에 ZIP 업로드
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./DtoLogFormatter.zip
+          asset_name: DtoLogFormatter.zip
+          asset_content_type: application/zip
