@@ -3,6 +3,11 @@ on:
   push:
     tags:
       - 'v*'
+
+# 권한 설정 추가
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
