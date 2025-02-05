@@ -19,20 +19,11 @@ jobs:
           zip -x "*.git*" "*.github/*" "*.DS_Store" "*.pyc" "__pycache__/*" "*.vscode/*" -r DtoLogFormatter.zip .
 
       - name: 릴리즈 생성
-        id: create_release
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: DtoLogFormatter.zip
           name: DtoLogFormatter
           draft: false
           prerelease: false
-          
-      - name: 릴리즈에 ZIP 업로드
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./DtoLogFormatter.zip
-          asset_name: DtoLogFormatter.zip
-          asset_content_type: application/zip
